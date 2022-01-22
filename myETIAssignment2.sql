@@ -1,0 +1,6 @@
+CREATE database tutors;
+
+USE tutors;
+
+CREATE TABLE Tutor (TutorID VARCHAR (10) NOT NULL PRIMARY KEY, Name VARCHAR (100) NOT NULL, Description VARCHAR (250) NOT NULL, Password VARCHAR(50) NOT NULL DEFAULT '123'); 
+
