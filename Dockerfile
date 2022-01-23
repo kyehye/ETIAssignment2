@@ -10,8 +10,8 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /docker-gs-ping
+RUN go build -o /eti-assignment-kai-hui
 
 EXPOSE 8011
 
-CMD [ "/docker-gs-ping" ]
+CMD [ "/eti-assignment-kai-hui" ]
