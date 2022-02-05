@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 )
 
@@ -56,18 +57,9 @@ func UpdateTutor(db *sql.DB, t Tutor) {
 	}
 }
 
-func DeleteTutor(db *sql.DB, t Tutor) {
-	query := fmt.Sprintf("DELETE FROM Tutor WHERE TutorID='%s'",
-		t.TutorID)
-	_, err := db.Query(query)
-	if err != nil {
-		panic(err.Error())
-	}
-}
-
-//View tutor based on ID
-func SearchTutors(db *sql.DB, TutorID string) (Tutor, string) {
-	query := fmt.Sprintf("SELECT * FROM Tutor WHERE TutorID = '%s'", TutorID)
+//Delete existing tutor information
+func DeleteTutor(db *sql.DB, TutorID string) (Tutor, string) {
+	query := fmt.Sprintf("DELETE FROM Tutor WHERE TutorID = '%s'", TutorID)
 
 	results := db.QueryRow(query)
 	var errMsg string
@@ -79,8 +71,27 @@ func SearchTutors(db *sql.DB, TutorID string) (Tutor, string) {
 	default:
 		panic(err.Error())
 	}
-
 	return tutors, errMsg
+}
+
+func ListTutors(db *sql.DB) []Tutor {
+
+	results, err := db.Query("SELECT TutorID, Name, Description FROM Tutor")
+
+	if err != nil {
+		panic(err.Error())
+	}
+	var tutors []Tutor
+	for results.Next() {
+		var getTutor Tutor
+		err = results.Scan(&getTutor.TutorID, &getTutor.Name, &getTutor.Description)
+		if err != nil {
+
+			panic(err.Error())
+		}
+		tutors = append(tutors, getTutor) //Store them in a list and use if required. --> var trips []Trip
+	}
+	return tutors
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,23 +153,27 @@ func tutor(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	if r.Method == "GET" {
+	if r.Method == "GET" { //its working
 		TutorID := r.URL.Query().Get("TutorID")
 		fmt.Println("TutorID: ", TutorID)
-		tutors, errMsg := SearchTutors(db, TutorID)
+		tutors := ListTutors(db)
+
+		json.NewEncoder(w).Encode(&tutors)
+	}
+	//---Deny any deletion of tutor's account or other tutor's information
+	if r.Method == "DELETE" {
+		TutorID := r.URL.Query().Get("TutorID")
+		fmt.Println("TutorID: ", TutorID)
+		tutors, errMsg := DeleteTutor(db, TutorID)
 
 		if errMsg == "Tutor ID not found." {
 			w.WriteHeader(http.StatusNotFound)
 			w.Write([]byte("404 - Tutor's account not found"))
 		} else {
 			fmt.Println(tutors)
-			json.NewEncoder(w).Encode(&tutors)
+			w.WriteHeader(http.StatusAccepted)
+			w.Write([]byte("202 - Tutor's account deleted"))
 		}
-	}
-	//---Deny any deletion of tutor's account or other tutor's information
-	if r.Method == "DELETE" {
-		w.WriteHeader(http.StatusAccepted)
-		w.Write([]byte("403 - For audit purposes, tutor's account cannot be deleted."))
 	}
 }
 
@@ -175,8 +190,12 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/tutors", tutor).Methods("GET", "POST", "PUT", "DELETE")
 
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+
 	fmt.Println("Tutors microservice API --> Listening at port 8011")
-	log.Fatal(http.ListenAndServe(":8011", router))
+	log.Fatal(http.ListenAndServe(":8011", handlers.CORS(originsOk, headersOk, methodsOk)(router)))
 
 	defer db.Close()
 }

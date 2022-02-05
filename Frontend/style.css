@@ -7,31 +7,31 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
   }
   
-  .classList thead tr {
+.classList thead tr {
     background-color: #009879;
     color: #ffffff;
     text-align: left;
-  }
+}
   
-  .classList th,
-  .classList td {
+.classList th,
+.classList td {
     padding: 12px 15px;
-  }
+}
   
-  .classList tbody tr {
+.classList tbody tr {
     border-bottom: 1px solid #dddddd;
-  }
+}
   
-  .classList tbody tr:nth-of-type(even) {
+.classList tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
-  }
+}
   
-  .classList tbody tr:last-of-type {
+.classList tbody tr:last-of-type {
     border-bottom: 2px solid #009879;
-  }
+}
   
-  .classList tbody tr.active-row {
+.classList tbody tr.active-row {
     font-weight: bold;
     color: #009879;
-  }
+}
   
