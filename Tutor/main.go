@@ -180,7 +180,7 @@ func tutor(w http.ResponseWriter, r *http.Request) {
 //Function main for testing purposes only
 func main() {
 	// instantiate tutor
-	tutors, err := sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/tutors")
+	tutors, err := sql.Open("mysql", "user:password@tcp(127.0.0.1:8012)/tutors")
 	db = tutors
 	// handle error
 	if err != nil {
