@@ -1,6 +1,6 @@
 async function displayAPIData() {
     //get API data
-    const response = await fetch("http://localhost:8011/tutors");
+    const response = await fetch("http://10.31.11.11:8011/tutors");
     data = await response.json();
   
     //generate HTML code

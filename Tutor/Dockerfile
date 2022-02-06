@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM golang:1.16-alpine
 
 WORKDIR /app
@@ -10,6 +8,6 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /eti-assignment-kai-hui
+RUN go build -o /Tutor
 
-CMD [ "/eti-assignment-kai-hui" ]
+CMD ["/Tutor"]
