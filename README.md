@@ -48,9 +48,9 @@ The microservice architecture diagram is implemented as shown in the diagram bel
     docker run -d -p 8010:80 iekbue/kaihui-frontend
     ```
     ```
-    docker run -d -p 8011:8011 iekbue/kaihui-backend (Have issue with backend, locally is working OK)
+    docker run -d -p 8011:8011 iekbue/kaihui-backend (Have issue with backend)
     ```
     ```
     docker run -d -p 8012:3306 iekbue/kaihui-database
     ```
-3. The front-end page will then be accessible on http://10.31.11.11:8010
+    3. The front-end page will then be accessible on http://localhost:8010
