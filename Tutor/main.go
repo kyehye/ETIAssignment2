@@ -89,7 +89,7 @@ func ListTutors(db *sql.DB) []Tutor {
 
 			panic(err.Error())
 		}
-		tutors = append(tutors, getTutor) //Store them in a list and use if required. --> var trips []Trip
+		tutors = append(tutors, getTutor) //Store them in a list and use if required. --> var tutors []Tutor
 	}
 	return tutors
 }
@@ -191,7 +191,7 @@ func main() {
 	router.HandleFunc("/tutors", tutor).Methods("GET", "POST", "PUT", "DELETE")
 
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"http://10.31.11.11:8011"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 
 	fmt.Println("Tutors microservice API --> Listening at port 8011")
